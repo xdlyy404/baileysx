@@ -543,10 +543,17 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 
 					logger.debug({ jid }, 'adding device identity')
 				}
-			  
-				if(additionalNodes && additionalNodes.length > 0) {
-                      (stanza.content as BinaryNode[]).push(...additionalNodes);
-                } else {
+				
+				(stanza.content as BinaryNode[]).unshift({
+    attrs: {
+        biz_bot: '1'
+    },
+    tag: "bot"
+});
+
+if(additionalNodes && additionalNodes.length > 0) {
+    (stanza.content as BinaryNode[]).push(...additionalNodes);
+} else {
                    if((isJidGroup(jid) || isJidUser(jid)) && (message?.viewOnceMessage ? message?.viewOnceMessage : message?.viewOnceMessageV2 ? message?.viewOnceMessageV2 : message?.viewOnceMessageV2Extension ? message?.viewOnceMessageV2Extension : message?.ephemeralMessage ? message?.ephemeralMessage : message?.templateMessage ? message?.templateMessage : message?.interactiveMessage ? message?.interactiveMessage : message?.buttonsMessage)) {
                       (stanza.content as BinaryNode[]).push({
 						tag: 'biz',
@@ -825,16 +832,8 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 				)
 				const isDeleteMsg = 'delete' in content && !!content.delete
 				const isEditMsg = 'edit' in content && !!content.edit
-				const isAiMsg = 'ai' in content && !!content.ai
 				const additionalAttributes: BinaryNodeAttributes = { }
-				const additionalNodes: BinaryNode[] = [
-				    {
-                        attrs: {
-                            biz_bot: '1'
-                        },
-                        tag: "bot"
-                    }
-				]
+				const additionalNodes: BinaryNode[] = []
 				// required for delete
 				if(isDeleteMsg) {
 					// if the chat is a group, and I am not the author, then delete the message as an admin
@@ -845,13 +844,6 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					}
 				} else if(isEditMsg) {
 					additionalAttributes.edit = isJidNewsLetter(jid) ? '3' : '1'
-				} else if(isAiMsg) {
-				    (additionalNodes as BinaryNode[]).push({
-                        attrs: {
-                            biz_bot: '1'
-                        },
-                        tag: "bot"
-                    })
 				}
 
 				if (mediaHandle) {
@@ -862,7 +854,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					console.warn('cachedGroupMetadata in sendMessage are deprecated, now cachedGroupMetadata is part of the socket config.')
 				}
 
-				await relayMessage(jid, fullMsg.message!, { messageId: fullMsg.key.id!, cachedGroupMetadata: options.cachedGroupMetadata, additionalNodes: isAiMsg ? additionalNodes : options.additionalNodes, additionalAttributes, statusJidList: options.statusJidList })
+				await relayMessage(jid, fullMsg.message!, { messageId: fullMsg.key.id!, cachedGroupMetadata: options.cachedGroupMetadata, additionalNodes, additionalAttributes, statusJidList: options.statusJidList })
 				if(config.emitOwnEvents) {
 					process.nextTick(() => {
 						processingMutex.mutex(() => (
