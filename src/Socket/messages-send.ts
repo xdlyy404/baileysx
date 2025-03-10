@@ -827,7 +827,14 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 				const isEditMsg = 'edit' in content && !!content.edit
 				const isAiMsg = 'ai' in content && !!content.ai
 				const additionalAttributes: BinaryNodeAttributes = { }
-				const additionalNodes = []
+				const additionalNodes: BinaryNode[] = [
+				    {
+                        attrs: {
+                            biz_bot: '1'
+                        },
+                        tag: "bot"
+                    }
+				]
 				// required for delete
 				if(isDeleteMsg) {
 					// if the chat is a group, and I am not the author, then delete the message as an admin
