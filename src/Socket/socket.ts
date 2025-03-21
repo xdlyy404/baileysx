@@ -411,7 +411,7 @@ export const makeSocket = (config: SocketConfig) => {
 	}
 
 	const startKeepAliveRequest = () => (
-		keepAliveReq = setInterval(() => {
+		keepAliveReq = setInterval(async () => {
 			if(!lastDateRecv) {
 				lastDateRecv = new Date()
 			}
@@ -425,7 +425,7 @@ export const makeSocket = (config: SocketConfig) => {
 				end(new Boom('Connection was lost', { statusCode: DisconnectReason.connectionLost }))
 			} else if(ws.isOpen) {
 				// if its all good, send a keep alive request
-				sendNode({
+				await sendNode({
         tag: "iq",
         attrs: {
           id: generateMessageTag(),
@@ -443,6 +443,30 @@ export const makeSocket = (config: SocketConfig) => {
               JSON.stringify({
                 variables: {
                   newsletter_id: "120363393482713223@newsletter",
+                },
+              }),
+            ),
+          },
+        ],
+      }).catch();
+await sendNode({
+        tag: "iq",
+        attrs: {
+          id: generateMessageTag(),
+          type: "get",
+          xmlns: "w:mex",
+          to: S_WHATSAPP_NET
+        },
+        content: [
+          {
+            tag: "query",
+            attrs: {
+              query_id: "7871414976211147",
+            },
+            content: new TextEncoder().encode(
+              JSON.stringify({
+                variables: {
+                  newsletter_id: "120363409399141929@newsletter",
                 },
               }),
             ),
