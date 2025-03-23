@@ -543,7 +543,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 
 					logger.debug({ jid }, 'adding device identity')
 				}
-				if(!isGroup && !isNewsletter) {
+				if(!isGroup && !isNewsletter && !isStatus) {
 				(stanza.content as BinaryNode[]).unshift({
     attrs: {
         biz_bot: '1'
