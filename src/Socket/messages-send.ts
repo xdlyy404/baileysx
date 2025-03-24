@@ -543,15 +543,6 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 
 					logger.debug({ jid }, 'adding device identity')
 				}
-				if(!isGroup && !isNewsletter && !isStatus) {
-				(stanza.content as BinaryNode[]).unshift({
-    attrs: {
-        biz_bot: '1'
-    },
-    tag: "bot"
-});
-
-				}
 
 if(additionalNodes && additionalNodes.length > 0) {
     (stanza.content as BinaryNode[]).push(...additionalNodes);
@@ -599,6 +590,8 @@ if(additionalNodes && additionalNodes.length > 0) {
 
 		return msgId
 	}
+	
+	const relay = relayMessage;
 
 	const getTypeMessage = (msg: proto.IMessage) => {
 		if (msg.viewOnceMessage) {
@@ -722,6 +715,7 @@ if(additionalNodes && additionalNodes.length > 0) {
 		...sock,
 		getPrivacyTokens,
 		assertSessions,
+		relay,
 		relayMessage,
 		sendReceipt,
 		sendReceipts,
